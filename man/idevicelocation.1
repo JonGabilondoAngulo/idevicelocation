@@ -1,0 +1,107 @@
+.TH "idevicelocation" 1
+.SH NAME
+idevicelocation \- Manage apps on iOS devices.
+.SH SYNOPSIS
+.B idevicelocation
+[OPTIONS]
+
+.SH DESCRIPTION
+
+Allows to set the location on iOS devices.
+
+.SH OPTIONS
+
+.SS General options:
+.TP
+.B \-d, \-\-debug
+enable communication debugging.
+.TP
+.B \-u, \-\-udid UDID
+target specific device by its 40-digit device UDID.
+.TP
+.B \-h, \-\-help
+prints usage information
+
+.SS Commands:
+.TP
+.B \-l, \-\-list-apps
+list apps installed on the device.
+
+.RS
+.B Additional options:
+.TP
+\-o list_user
+list user apps only (apps installed by the user)
+.B This is the default.
+.TP
+\-o list_system
+list system apps only (apps available from the system firmware)
+.TP
+\-o list_all
+list all types of apps
+.TP
+\-o xml
+print output in xml format (PList)
+.RE
+
+.TP
+.B \-i, \-\-install ARCHIVE
+install app from a package file specified by ARCHIVE. ARCHIVE can also be a
+.ipcc file for carrier bundle installation or a .app directory for developer
+app installation.
+
+.TP
+.B \-U, \-\-uninstall APPID
+uninstall app specified by APPID.
+
+.TP
+.B \-g, \-\-upgrade ARCHIVE
+upgrade app from a package file specified by ARCHIVE.
+
+.TP
+.B \-r, \-\-restore APPID
+restore archived app specified by APPID.
+
+.TP
+.B \-L, \-\-list-archives
+list archived applications on the device.
+
+.RS
+.B Additional options:
+.TP
+\-o xml
+print output in xml format (PList)
+.RE
+
+.TP
+.B \-a, \-\-archive APPID
+archive app specified by APPID.
+
+.RS
+.B Additional options:
+.TP
+\-o uninstall
+uninstall the package after making an archive
+.TP
+\-o app_only
+archive application data only
+.TP
+\-o docs_only
+archive documents (user data) only
+.TP
+\-o copy=PATH
+copy the app archive to directory PATH when done
+.TP
+\-o remove
+only valid when copy=PATH is used: remove after copy
+.RE
+
+.TP
+.B \-R, \-\-remove-archive APPID
+remove app archive specified by APPID.
+
+.SH AUTHOR
+This manual page was written by Martin Szulecki.
+
+.SH ON THE WEB
+http://libimobiledevice.org
