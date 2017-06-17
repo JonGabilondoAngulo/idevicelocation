@@ -55,7 +55,7 @@ Options:
 Troubleshooting
 ===============
 
-If the compiler cant find openssl libs try this:
+If the compiler cant find the openssl libs try this:
 
 	export PATH=/usr/local/opt/openssl/bin:$PATH
 	export LD_LIBRARY_PATH=/usr/local/opt/openssl/lib:$LD_LIBRARY_PATH
