@@ -1,5 +1,7 @@
 /*
  * idevicelocation - Set the location on iOS devices.
+ *
+ * Copyright (c) 2017 Jon Gabilondo, All Rights Reserved.
  */
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -11,12 +13,6 @@
 #include <string.h>
 #include <getopt.h>
 #include <errno.h>
-//#include <time.h>
-//#include <libgen.h>
-//#include <inttypes.h>
-//#include <limits.h>
-//#include <sys/stat.h>
-//#include <dirent.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -127,7 +123,7 @@ int main(int argc, char **argv)
     
     service_error_t se = service_client_new(phone, service, &service_client);
     if (se) {
-        printf("ERROR: Could not crate Service Client.\n");
+        printf("Could not crate Service Client.\n");
     } else {
         
         uint32_t start = 0;
@@ -143,9 +139,8 @@ int main(int argc, char **argv)
         e = service_send(service_client, (void*)&lng_len, sizeof(lng_len), &sent);
         e = service_send(service_client, lng, strlen(lng), &sent);
         e = service_send(service_client, (void*)&stop, sizeof(stop), &sent);
-        
         if (e) {
-            printf("ERROR: Could not send data to Service Client.\n");
+            printf("Could not send data to Service Client.\n");
         }
     }
     
@@ -175,6 +170,5 @@ leave_cleanup:
     if (udid) {
         free(udid);
     }
-    
 	return res;
 }
