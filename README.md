@@ -36,7 +36,7 @@ To compile run:
 Usage
 =====
 
-$idevicelocation [OPTIONS] LATITUDE LONGITUDE
+	$idevicelocation [OPTIONS] LATITUDE LONGITUDE
  
 Set the location passing two arguments, latitude and longitude:
 
