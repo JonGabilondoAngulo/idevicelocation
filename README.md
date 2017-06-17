@@ -38,13 +38,13 @@ Usage
 
 $idevicelocation [OPTIONS] LATITUDE LONGITUDE
  
-Set the location passing two arguments, latitude and longitude.
+Set the location passing two arguments, latitude and longitude:
 
-	$idevicelocation 67.0877 -5.009 
+	$idevicelocation 48.856614 2.3522219000000177 
 
-Passing a negative value :
+Passing negative values :
 
-	$idevicelocation 77.432332 -- -7.008373
+	$idevicelocation 77.432332 -- -7.008373564
 
 Options:
 
