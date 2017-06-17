@@ -45,5 +45,3 @@ Options:
 -u specify device UDID.
 -h help.
 
-
-
