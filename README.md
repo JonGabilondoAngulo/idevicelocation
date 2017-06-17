@@ -56,6 +56,7 @@ Troubleshooting
 ===============
 
 Mac Users: 
+
 	If the compiler cant find the openssl libs try this:
 
 		export PATH=/usr/local/opt/openssl/bin:$PATH
