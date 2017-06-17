@@ -51,4 +51,15 @@ Options:
 	-d enable connection debug messages.
 	-u specify device UDID.
 	-h help.
+	
+Troubleshooting
+===============
+
+If the compiler cant find openssl libs try this:
+
+	export PATH=/usr/local/opt/openssl/bin:$PATH
+	export LD_LIBRARY_PATH=/usr/local/opt/openssl/lib:$LD_LIBRARY_PATH
+	export CPATH=/usr/local/opt/openssl/include:$LD_LIBRARY_PATH
+	export LIBRARY_PATH=/usr/local/opt/openssl/lib:$LIBRARY_PATH
+
 
