@@ -1,6 +1,7 @@
 About
 =====
-The idevicelocation tool allows to set the location on iOS Devices.
+The idevicelocation tool allows to set the location on iOS Devices. It makes use of the fabulous libimobiledevice library that allows communication
+with iOS devices.
 
 Requirements
 ============
