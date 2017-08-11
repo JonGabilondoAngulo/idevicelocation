@@ -7,6 +7,7 @@
 #include <config.h>
 #endif
 #include <stdlib.h>
+#include <stdbool.h>
 #define _GNU_SOURCE 1
 #define __USE_GNU 1
 #include <stdio.h>
@@ -22,12 +23,10 @@
 #include <libimobiledevice/service.h>
 #include <libimobiledevice/installation_proxy.h>
 #include <libimobiledevice/notification_proxy.h>
-
-#include <plist/plist.h>
-
-#define swap32(value) (((value & 0xFF000000) >> 24) | ((value & 0x00FF0000) >> 8) | ((value & 0x0000FF00) << 8) | ((value & 0x000000FF) << 24) )
+#include <include/endianness.h>
 
 char *udid = NULL;
+bool stop = false;
 
 static void print_usage(int argc, char **argv)
 {
@@ -39,6 +38,7 @@ static void print_usage(int argc, char **argv)
     printf(" The following OPTIONS are accepted:\n");
 	printf
 		("  -u, --udid UDID\tTarget specific device by its 40-digit device UDID.\n"
+         "  -s, --stop\t\tstops device simulation\n"
          "  -h, --help\t\tprints usage information\n"
 		 "  -d, --debug\t\tenable communication debugging\n" "\n");
 	printf("Homepage: <https://github.com/JonGabilondoAngulo>\n");
@@ -48,14 +48,15 @@ static void parse_opts(int argc, char **argv)
 {
 	static struct option longopts[] = {
 		{"help", no_argument, NULL, 'h'},
-		{"udid", required_argument, NULL, 'u'},
+        {"udid", required_argument, NULL, 'u'},
+        {"stop", no_argument, NULL, 's'},
         {"debug", no_argument, NULL, 'd'},
 		{NULL, 0, NULL, 0}
 	};
 	int c;
 
 	while (1) {
-        c = getopt_long(argc, argv, "hdu:", longopts, (int *) 0);
+        c = getopt_long(argc, argv, "hdu:s", longopts, (int *) 0);
 		if (c == -1) {
 			break;
 		}
@@ -74,13 +75,16 @@ static void parse_opts(int argc, char **argv)
             case 'd':
                 idevice_set_debug_level(1);
                 break;
+            case 's':
+                stop = true;
+                break;
             default:
                 print_usage(argc, argv);
                 exit(2);
         }
 	}
     
-    if ((argc - optind) < 2) {
+    if (!stop && (argc - optind) < 2) {
         printf("ERROR: You need to specify LATITUDE and LONGITUDE\n\n");
         print_usage(argc, argv);
         exit(EXIT_FAILURE);
@@ -100,8 +104,10 @@ int main(int argc, char **argv)
     
 	parse_opts(argc, argv);
     
-    lat = (argv+optind)[0];
-    lng = (argv+optind+1)[0];
+    if (!stop) {
+        lat = (argv+optind)[0];
+        lng = (argv+optind+1)[0];
+    }
     
 	if (IDEVICE_E_SUCCESS != idevice_new(&phone, udid)) {
 		fprintf(stderr, "No iOS device found, is it plugged in?\n");
@@ -126,21 +132,51 @@ int main(int argc, char **argv)
         printf("Could not crate Service Client.\n");
     } else {
         
-        uint32_t start = 0;
-        uint32_t stop = swap32(1);
-        uint32_t sent = 0;
-        uint32_t lat_len = swap32(strlen(lat));
-        uint32_t lng_len = swap32(strlen(lng));
         service_error_t e;
-        
-        e = service_send(service_client, (void*)&start, sizeof(start), &sent);
-        e = service_send(service_client, (void*)&lat_len, sizeof(lat_len), &sent);
-        e = service_send(service_client, lat, strlen(lat), &sent);
-        e = service_send(service_client, (void*)&lng_len, sizeof(lng_len), &sent);
-        e = service_send(service_client, lng, strlen(lng), &sent);
-        e = service_send(service_client, (void*)&stop, sizeof(stop), &sent);
-        if (e) {
-            printf("Could not send data to Service Client.\n");
+        uint32_t sent = 0;
+
+        // send stop
+        if (stop) {
+            //debug_info("Sending stop.");
+
+            uint32_t stopMessage = htobe32(1);
+            e = service_send(service_client, (void*)&stopMessage, sizeof(stopMessage), &sent);
+            if (e) {
+                printf("Could not send data to Service Client.\n");
+            }
+        } else {
+
+            // send start and location
+            do {
+                uint32_t startMessage = htobe32(0);
+                uint32_t lat_len = htobe32(strlen(lat));
+                uint32_t lng_len = htobe32(strlen(lng));
+
+                // start
+                //debug_info("Sending start.");
+                e = service_send(service_client, (void*)&startMessage, sizeof(startMessage), &sent);
+                if (e) {
+                    fprintf(stderr, "Could not send data to Service Client.\n");
+                    break;
+                }
+                // lat
+                //debug_info("Sending latitude.");
+                e = service_send(service_client, (void*)&lat_len, sizeof(lat_len), &sent);
+                e = service_send(service_client, lat, strlen(lat), &sent);
+                if (e) {
+                    fprintf(stderr, "Could not send data to Service Client.\n");
+                    break;
+                }
+                // lng
+                //debug_info("Sending longitude.");
+                e = service_send(service_client, (void*)&lng_len, sizeof(lng_len), &sent);
+                e = service_send(service_client, lng, strlen(lng), &sent);
+                if (e) {
+                    fprintf(stderr, "Could not send data to Service Client.\n");
+                    break;
+                }
+                break;
+            } while (true);
         }
     }
     
