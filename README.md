@@ -46,11 +46,16 @@ Passing negative values :
 
 	$ idevicelocation 77.432332 -- -7.008373564
 
+Stopping Location Simulation:
+
+	$ idevicelocation --stop
+
 Options:
 
 	-d enable connection debug messages.
 	-u specify device UDID.
 	-h help.
+	-s stop location simulation on device. 
 	
 Troubleshooting
 ===============
