@@ -45,6 +45,8 @@ Set the location passing two arguments, latitude and longitude:
 Passing negative values :
 
 	$ idevicelocation 77.432332 -- -7.008373564
+	
+	$ idevicelocation -- -77.432332 -7.008373564
 
 Stopping Location Simulation:
 
