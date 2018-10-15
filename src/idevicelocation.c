@@ -37,7 +37,7 @@ static void print_usage(int argc, char **argv)
 	printf("Usage: %s [OPTIONS] LATITUDE LONGITUDE\n\n", (name ? name + 1 : argv[0]));
     printf(" The following OPTIONS are accepted:\n");
 	printf
-		("  -u, --udid UDID\tTarget specific device by its 40-digit device UDID.\n"
+		("  -u, --udid UDID\tTarget specific device by its device UDID.\n"
          "  -s, --stop\t\tstops device simulation\n"
          "  -h, --help\t\tprints usage information\n"
 		 "  -d, --debug\t\tenable communication debugging\n" "\n");
@@ -65,11 +65,6 @@ static void parse_opts(int argc, char **argv)
                 print_usage(argc, argv);
                 exit(EXIT_SUCCESS);
             case 'u':
-                if (strlen(optarg) != 40) {
-                    printf("%s: invalid UDID specified (length != 40)\n", argv[0]);
-                    print_usage(argc, argv);
-                    exit(2);
-                }
                 udid = strdup(optarg);
                 break;
             case 'd':
