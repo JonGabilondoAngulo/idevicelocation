@@ -33,7 +33,7 @@ static void print_usage(int argc, char **argv)
 	char *name = NULL;
 
 	name = strrchr(argv[0], '/');
-    printf("Set Geo Location in iOS devices.\n\n");
+    printf("Set Geo Location in iOS devices connected over USB and WiFi.\n\n");
 	printf("Usage: %s [OPTIONS] LATITUDE LONGITUDE\n\n", (name ? name + 1 : argv[0]));
     printf(" The following OPTIONS are accepted:\n");
 	printf
@@ -96,6 +96,7 @@ int main(int argc, char **argv)
     char *lat = NULL;
     char *lng = NULL;
 	int res = 0;
+    enum idevice_options lookup_opts = IDEVICE_LOOKUP_USBMUX | IDEVICE_LOOKUP_NETWORK;
     
 	parse_opts(argc, argv);
     
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
         lng = (argv+optind+1)[0];
     }
     
-	if (IDEVICE_E_SUCCESS != idevice_new(&phone, udid)) {
+	if (IDEVICE_E_SUCCESS != idevice_new_with_options(&phone, udid, lookup_opts)) {
 		fprintf(stderr, "No iOS device found, is it plugged in?\n");
 		return EXIT_FAILURE;
 	}
